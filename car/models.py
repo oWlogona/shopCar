@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 class ModelCar(models.Model):
     name = models.CharField(max_length=20)
@@ -30,6 +30,8 @@ class CityCar(models.Model):
 
 
 class Car(models.Model):
+    owner = models.ForeignKey(User, related_name='cars', on_delete=models.CASCADE)
+    created_by = models.DateTimeField(auto_now_add=True)
     model = models.ForeignKey(ModelCar, on_delete=models.CASCADE,  blank=True, null=True, default=None)
     brand = models.ForeignKey(BrandCar, on_delete=models.CASCADE, blank=True, null=True, default=None)
     price = models.IntegerField(default=0)
