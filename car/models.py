@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class ModelCar(models.Model):
@@ -30,13 +31,11 @@ class CityCar(models.Model):
 
 
 class Car(models.Model):
-    model = models.ForeignKey(ModelCar, on_delete=models.CASCADE,  blank=True, null=True, default=None)
+    owner = models.ForeignKey(User, related_name='cars', on_delete=models.CASCADE)
+    created_by = models.DateTimeField(auto_now_add=True)
+    model = models.ForeignKey(ModelCar, on_delete=models.CASCADE, blank=True, null=True, default=None)
     brand = models.ForeignKey(BrandCar, on_delete=models.CASCADE, blank=True, null=True, default=None)
     price = models.IntegerField(default=0)
-    color = models.CharField(max_length=20,  blank=True, null=True, default=None)
+    color = models.CharField(max_length=20, blank=True, null=True, default=None)
     transmission = models.ForeignKey(TransmissionCar, on_delete=models.CASCADE, blank=True, null=True, default=None)
     city = models.ManyToManyField(CityCar, related_name='city_car', blank=True, default=None)
-
-
-
-
