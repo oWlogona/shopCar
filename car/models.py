@@ -33,9 +33,9 @@ class Car(models.Model):
     model = models.ForeignKey(ModelCar, on_delete=models.CASCADE,  blank=True, null=True, default=None)
     brand = models.ForeignKey(BrandCar, on_delete=models.CASCADE, blank=True, null=True, default=None)
     price = models.IntegerField(default=0)
-    color = models.CharField(max_length=20)
+    color = models.CharField(max_length=20,  blank=True, null=True, default=None)
     transmission = models.ForeignKey(TransmissionCar, on_delete=models.CASCADE, blank=True, null=True, default=None)
-    city = models.ManyToManyField(CityCar)
+    city = models.ManyToManyField(CityCar, related_name='city_car', blank=True, default=None)
 
 
 
