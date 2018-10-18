@@ -31,3 +31,20 @@ class CarDetail(APIView):
         car = self.get_object(pk)
         car.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CarList(APIView):
+
+    def get(self, request, format=None):
+        cars_list = Car.objects.all()
+        serializer = CarSerializer(cars_list, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = CarSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+

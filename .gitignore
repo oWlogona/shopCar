@@ -1,5 +1,7 @@
 app/config/config.json
 
+
+db.sqlite3
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -40,6 +42,7 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
+.coverage
 .coverage
 .coverage.*
 .cache
