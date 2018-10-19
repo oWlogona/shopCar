@@ -7,6 +7,16 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework import permissions
 from car.permissions import IsOwnerOrReadOnly
+from rest_framework.decorators import api_view
+from rest_framework.reverse import reverse
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('users-list', request=request, format=format),
+        'cars': reverse('cars-list', request=request, format=format),
+    })
 
 
 class CarDetail(APIView):

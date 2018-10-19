@@ -1,10 +1,11 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-from car.views import CarDetail, CarList, UserList, UserDetail
+from car.views import CarDetail, CarList, UserList, UserDetail, api_root
 
 urlpatterns = format_suffix_patterns([
-    path('cars/', CarList.as_view()),
-    path('cars/<int:pk>/', CarDetail.as_view()),
-    path('users/', UserList.as_view()),
-    path('users/<int:pk>/', UserDetail.as_view()),
+    path('', api_root),
+    path('cars_list/', CarList.as_view(), name="cars-list"),
+    path('cars_list/<int:pk>/', CarDetail.as_view()),
+    path('users_list/', UserList.as_view(), name="users-list"),
+    path('users_list/<int:pk>/', UserDetail.as_view()),
 ])
