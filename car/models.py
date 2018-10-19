@@ -17,7 +17,7 @@ class BrandCar(models.Model):
 
 
 class TransmissionCar(models.Model):
-    t_type = models.CharField(max_length=20)
+    t_type = models.CharField(max_length=20) # choices ()
 
     def __str__(self):
         return self.t_type
@@ -25,6 +25,10 @@ class TransmissionCar(models.Model):
 
 class CityCar(models.Model):
     name = models.CharField(max_length=20)
+    # postgres
+    # rename City
+    # longtitude - coordinate validator
+    # latitude - coordinate validator
 
     def __str__(self):
         return self.name
@@ -39,3 +43,6 @@ class Car(models.Model):
     color = models.CharField(max_length=20, blank=True, null=True, default=None)
     transmission = models.ForeignKey(TransmissionCar, on_delete=models.CASCADE, blank=True, null=True, default=None)
     city = models.ManyToManyField(CityCar, related_name='city_car', blank=True, default=None)
+
+
+

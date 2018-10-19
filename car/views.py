@@ -102,3 +102,30 @@ class CarFilterModel(APIView):
         cars_filters_fields = Car.objects.filter(model=model_id.id)
         serializer = CarSerializer(cars_filters_fields, many=True)
         return Response(serializer.data)
+
+    """
+    Endpoint:
+    
+    [
+       { 
+        city: str,
+        cars_count: int,
+        brands: [
+            mers: int,
+            bmw: int,
+            .....
+        ]
+        },
+        
+        { 
+        city: str,
+        cars_count: int,
+        brands: [
+            brand: count_brands
+        ]
+        }
+        ..........
+    ]
+    
+    + tests
+    """

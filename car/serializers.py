@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from car.models import Car
+from car.models import Car, CityCar
 from rest_framework import serializers
 
 
