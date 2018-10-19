@@ -1,6 +1,7 @@
+from django.http import HttpResponse
 from django.http import Http404
 from car.serializers import CarSerializer, UserSerializer
-from car.models import Car
+from car.models import Car, ModelCar
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -26,7 +27,7 @@ class CarDetail(APIView):
         try:
             return Car.objects.get(pk=pk)
         except Car.DoesNotExist:
-            return Http404
+            raise Http404
 
     def get(self, request, pk, format=None):
         car = self.get_object(pk)
@@ -85,4 +86,19 @@ class UserDetail(APIView):
     def get(self, request, pk, format=None):
         user = self.get_object(pk)
         serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+
+class CarFilterModel(APIView):
+
+    def get_object(self, model):
+        try:
+            return ModelCar.objects.get(name=model)
+        except ModelCar.DoesNotExist:
+            raise Http404
+
+    def get(self, request, model, format=None):
+        model_id = self.get_object(model)
+        cars_filters_fields = Car.objects.filter(model=model_id.id)
+        serializer = CarSerializer(cars_filters_fields, many=True)
         return Response(serializer.data)
