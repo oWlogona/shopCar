@@ -3,11 +3,14 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-def validate_coors(val):
-    if True:
-        pass
-    else:
-        raise ValidationError
+def validate_longtitude(value):
+    if value >= 90 or value <= -90:
+        raise ValidationError(('%(value)s longtitude must be to -90 from 90'), params={'value': value}, )
+
+
+def validate_latitude(value):
+    if value >= 180 or value <= -180:
+        raise ValidationError(('%(value)s latitude must be to -180 from 180'), params={'value': value}, )
 
 
 class ModelCar(models.Model):
@@ -25,7 +28,12 @@ class BrandCar(models.Model):
 
 
 class TransmissionCar(models.Model):
-    t_type = models.CharField(max_length=20)  # choices ()
+    TYPE_TRANSMISSION = (
+        ('AUTO', 'AUTOMATIC'),
+        ('MAN', 'MANUAL'),
+    )
+    t_type = models.CharField(max_length=20, choices=TYPE_TRANSMISSION,
+                              default={None: 'YOUR CARS TRANSMISSION'})  # choices ()
 
     def __str__(self):
         return self.t_type
@@ -33,8 +41,8 @@ class TransmissionCar(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=20)
-    longtitude = models.FloatField(default=0, validators=[validate_coors])
-    latitude = models.FloatField(default=0)
+    longtitude = models.FloatField(default=0, validators=[validate_longtitude])
+    latitude = models.FloatField(default=0, validators=[validate_latitude])
 
     def __str__(self):
         return self.name
