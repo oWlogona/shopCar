@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.http import Http404
-from car.serializers import CarSerializer, UserSerializer
-from car.models import Car, ModelCar
+from car.serializers import CarSerializer, UserSerializer, CitySerializer
+from car.models import Car, ModelCar, City, BrandCar
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,6 +10,7 @@ from rest_framework import permissions
 from car.permissions import IsOwnerOrReadOnly
 from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
+from rest_framework.renderers import JSONRenderer
 
 
 @api_view(['GET'])
@@ -17,6 +18,7 @@ def api_root(request, format=None):
     return Response({
         'users': reverse('users-list', request=request, format=format),
         'cars': reverse('cars-list', request=request, format=format),
+        'city': reverse('city-list', request=request, format=format),
     })
 
 
@@ -103,29 +105,29 @@ class CarFilterModel(APIView):
         serializer = CarSerializer(cars_filters_fields, many=True)
         return Response(serializer.data)
 
-    """
-    Endpoint:
-    
-    [
-       { 
-        city: str,
-        cars_count: int,
-        brands: [
-            mers: int,
-            bmw: int,
-            .....
-        ]
-        },
-        
-        { 
-        city: str,
-        cars_count: int,
-        brands: [
-            brand: count_brands
-        ]
-        }
-        ..........
-    ]
-    
-    + tests
-    """
+
+class CityList(APIView):
+    # Pagination (?page=3)
+
+    def get(self, request, format=None):
+        all_cities = City.objects.all()
+        all_brand = BrandCar.objects.all()
+        cities_data = []
+        for city in all_cities:
+            list_cars_in_city = Car.objects.filter(city=city.id)
+            city_data = {
+                'name': city.name,
+                'cars_in_city': list_cars_in_city.count(),
+                'brands': [],
+            }
+            brand_car = {}
+            for car_item in list_cars_in_city:
+                brand = all_brand.get(id=car_item.brand.id)
+                if brand_car.get(brand.name):
+                    brand_car[brand.name] += 1
+                else:
+                    brand_car[brand.name] = 1
+            city_data['brands'].append(brand_car)
+            cities_data.append(city_data)
+        serializer = CitySerializer(cities_data, many=True)
+        return Response(serializer.data)

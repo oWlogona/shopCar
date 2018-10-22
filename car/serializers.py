@@ -1,6 +1,12 @@
 from django.contrib.auth.models import User
-from car.models import Car, CityCar
+from car.models import Car, City
 from rest_framework import serializers
+
+
+class CitySerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=150)
+    cars_in_city = serializers.IntegerField(default=0)
+    brands = serializers.ListField()
 
 
 class CarSerializer(serializers.ModelSerializer):
