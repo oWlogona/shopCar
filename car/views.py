@@ -111,8 +111,7 @@ class CityList(APIView):
     def get_brands_list(self, list_cars_in_city, all_brands_list):
         brand_car = {}
         for car_item in list_cars_in_city.select_related('brand'):
-            brand = all_brands_list.get(name=car_item.brand)
-            brand_car[brand.name] = brand_car.get(brand.name, 0) + 1
+            brand_car[car_item.brand.name] = brand_car.get(car_item.brand.name, 0) + 1
         return brand_car
 
     def get(self, request, format=None):
