@@ -5,12 +5,12 @@ from django.contrib.auth.models import User
 
 def validate_longtitude(value):
     if value >= 90 or value <= -90:
-        raise ValidationError(('%(value)s longtitude must be to -90 from 90'), params={'value': value}, )
+        raise ValidationError('(value)s longtitude must be to -90 from 90'.format(value=value))
 
 
 def validate_latitude(value):
     if value >= 180 or value <= -180:
-        raise ValidationError(('%(value)s latitude must be to -180 from 180'), params={'value': value}, )
+        raise ValidationError('(value)s latitude must be to -180 from 180'.format(value=value))
 
 
 class ModelCar(models.Model):

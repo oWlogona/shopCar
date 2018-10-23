@@ -6,6 +6,8 @@ coreapi-cli==1.0.9
 coreschema==0.0.4
 Django==2.1.2
 djangorestframework==3.8.2
+geographiclib==1.49
+geopy==1.17.0
 httpie==0.9.9
 idna==2.7
 itypes==1.1.0
