@@ -1,11 +1,11 @@
-from django.core.exceptions import ValidationError
+from rest_framework.validators import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 
 
 def validate_longtitude(value):
     if value >= 90 or value <= -90:
-        raise ValidationError('(value)s longtitude must be to -90 from 90'.format(value=value))
+        raise ValidationError('(value)s longitude must be to -90 from 90'.format(value=value))
 
 
 def validate_latitude(value):
@@ -41,7 +41,7 @@ class TransmissionCar(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=20)
-    longtitude = models.FloatField(default=0, validators=[validate_longtitude])
+    longitude = models.FloatField(default=0, validators=[validate_longtitude])
     latitude = models.FloatField(default=0, validators=[validate_latitude])
 
     def __str__(self):

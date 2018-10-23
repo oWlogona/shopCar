@@ -107,11 +107,17 @@ class CarFilterModel(APIView):
 
 
 class CityList(APIView):
-    # Pagination (?page=3)
+
+    def get_brands_list(self, list_cars_in_city, all_brands_list):
+        brand_car = {}
+        for car_item in list_cars_in_city.select_related('brand'):
+            brand = all_brands_list.get(name=car_item.brand)
+            brand_car[brand.name] = brand_car.get(brand.name, 0) + 1
+        return brand_car
 
     def get(self, request, format=None):
         all_cities = City.objects.all()
-        all_brand = BrandCar.objects.all()
+        all_brands_list = BrandCar.objects.all()
         cities_data = []
         for city in all_cities:
             list_cars_in_city = Car.objects.filter(city=city.id)
@@ -120,14 +126,7 @@ class CityList(APIView):
                 'cars_in_city': list_cars_in_city.count(),
                 'brands': [],
             }
-            brand_car = {}
-            for car_item in list_cars_in_city:
-                brand = all_brand.get(id=car_item.brand.id)
-                if brand_car.get(brand.name):
-                    brand_car[brand.name] += 1
-                else:
-                    brand_car[brand.name] = 1
-            city_data['brands'].append(brand_car)
+            city_data['brands'].append(self.get_brands_list(list_cars_in_city, all_brands_list))
             cities_data.append(city_data)
         serializer = CitySerializer(cities_data, many=True)
         return Response(serializer.data)
