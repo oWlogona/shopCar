@@ -1,6 +1,10 @@
+import json
+from rest_framework.parsers import JSONParser
 from django.test import TestCase
 from car.models import Car
 from car.models import validate_latitude, validate_longtitude
+from django.test import Client
+from rest_framework.test import APITestCase
 
 
 class CarModelTestCase(TestCase):
@@ -30,7 +34,17 @@ class TestValidatorsTestCase(TestCase):
                 validate_longtitude(val)
 
 
-class EndPointTestCase(CarModelTestCase):
+class EndPointTestCase(APITestCase):
 
-    def test_my_think(self):
-        print('here', Car.objects.count())
+    def setUp(self):
+        Car.objects.create(owner_id=1, brand_id=1, price=1470, color='YELLOW', transmission_id=1)
+
+    def test_enter_endpoint(self):
+        response = self.client.get('/cars/1/')
+        response_data = {'id': 1, 'brand': 1, 'price': 1470, 'color': 'YELLOW', 'transmission': 1, 'city': [],
+                         'model': None, 'owner': None}
+        self.assertEqual(response.data, response_data)
+
+    def test_not_enter_endpoint(self):
+        response = self.client.get('/cars/2/')
+        self.assertEqual(response.status_code, 404)
