@@ -1,6 +1,6 @@
 from car.models import Car
 from rest_framework.test import APITestCase, force_authenticate
-from car.models import validate_latitude, validate_longtitude
+from car.models import validate_longtitude
 from django.test import TestCase
 from django.contrib.auth.models import User
 
@@ -26,7 +26,7 @@ class ValidatorsTestCase(TestCase):
         for val in self.valid_long:
             validate_longtitude(val)
 
-    def test_not_valide_longtitude(self):
+    def test_not_validete_longtitude(self):
         for val in self.not_valid_long:
             with self.assertRaises(Exception):
                 validate_longtitude(val)
