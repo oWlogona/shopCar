@@ -1,11 +1,8 @@
-import json
-from django.contrib.auth.models import User
-from rest_framework.parsers import JSONParser
-from django.test import TestCase
 from car.models import Car
+from rest_framework.test import APITestCase, force_authenticate
 from car.models import validate_latitude, validate_longtitude
-from django.test import Client
-from rest_framework.test import APITestCase, APIClient, force_authenticate
+from django.test import TestCase
+from django.contrib.auth.models import User
 
 
 class CarModelTestCase(TestCase):
@@ -52,6 +49,7 @@ class EndPointTestCase(APITestCase):
         response = self.client.get('/cars/2/')
         self.assertEqual(response.status_code, 404)
 
+    # doesn't working
     def test_add_cars(self):
         add_data = {'color': 'BLACK'}
         response = self.client.post('/cars/', add_data, format='json')
@@ -63,6 +61,7 @@ class SomeTest(APITestCase):
         Car.objects.create(owner_id=1, brand_id=1, price=1470, color='YELLOW', transmission_id=1)
         User.objects.create(username='admin', password='uthvbjyf')
 
+    # doesn't working
     def test_update_cars(self):
         user = User.objects.get(pk=1)
         add_data = {'color': 'GREEN'}
