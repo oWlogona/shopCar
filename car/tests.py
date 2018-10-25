@@ -1,5 +1,5 @@
 from car.models import Car
-from rest_framework.test import APITestCase, force_authenticate
+from rest_framework.test import APITestCase
 from car.models import validate_longtitude
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -36,8 +36,7 @@ class EndPointTestCase(APITestCase):
 
     def setUp(self):
         Car.objects.create(owner_id=1, brand_id=1, price=1470, color='YELLOW', transmission_id=1)
-        User.objects.create(username='admin', password='uthvbjyf')
-        self.client.login(username='admin', password='uthvbjyf')
+        self.user = User.objects.create(username='admin', password='uthvbjyf')
 
     def test_enter_endpoint(self):
         response = self.client.get('/cars/1/')
@@ -50,20 +49,15 @@ class EndPointTestCase(APITestCase):
         self.assertEqual(response.status_code, 404)
 
     # doesn't working
-    def test_add_cars(self):
-        add_data = {'color': 'BLACK'}
-        response = self.client.post('/cars/', add_data, format='json')
+    # def test_add_cars(self):
+    #     add_data = {'color': 'BLACK'}
+    #     response = self.client.post('/cars/', add_data, format='json')
+    #     print(response)
 
-
-class SomeTest(APITestCase):
-
-    def setUp(self):
-        Car.objects.create(owner_id=1, brand_id=1, price=1470, color='YELLOW', transmission_id=1)
-        User.objects.create(username='admin', password='uthvbjyf')
-
-    # doesn't working
     def test_update_cars(self):
-        user = User.objects.get(pk=1)
-        add_data = {'color': 'GREEN'}
-        request = self.client.put('/cars/1/', add_data)
-        response = force_authenticate(request, user=user)
+        self.client.force_login(self.user)
+        response_data = {'price': 2470, 'brand': 1, 'id': 1, 'model': None, 'owner': 'admin', 'city': [],
+                         'color': 'GREEN', 'transmission': 1}
+        add_data = {'color': 'GREEN', 'price': 2470}
+        response = self.client.put('/cars/1/', add_data, format='json')
+        self.assertEqual(response.data, response_data)
