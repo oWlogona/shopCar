@@ -12,6 +12,8 @@ from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework.renderers import JSONRenderer
 
+from django.db.models import Count
+
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -115,17 +117,16 @@ class CityList(APIView):
         return brand_car
 
     def get(self, request, format=None):
-        all_cities = City.objects.all()
         all_brands_list = BrandCar.objects.all()
+        list_car = City.objects.annotate(count_car=Count('city_car'))
         cities_data = []
-        for city in all_cities:
-            list_cars_in_city = Car.objects.filter(city=city.id)
+        for item in list_car:
             city_data = {
-                'name': city.name,
-                'cars_in_city': list_cars_in_city.count(),
+                'name': item.name,
+                'cars_in_city': item.count_car,
                 'brands': [],
             }
-            city_data['brands'].append(self.get_brands_list(list_cars_in_city, all_brands_list))
+            city_data['brands'].append(self.get_brands_list(item.city_car.all(), all_brands_list))
             cities_data.append(city_data)
         serializer = CitySerializer(cities_data, many=True)
         return Response(serializer.data)
