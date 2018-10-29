@@ -1,8 +1,8 @@
 from car.models import Car
-from rest_framework.test import APITestCase
-from car.models import validate_longtitude
 from django.test import TestCase
+from car.models import validate_longtitude
 from django.contrib.auth.models import User
+from rest_framework.test import APITestCase
 
 
 class CarModelTestCase(TestCase):

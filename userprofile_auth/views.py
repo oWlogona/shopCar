@@ -1,18 +1,21 @@
-from rest_framework.reverse import reverse
-from django.contrib.auth import authenticate
 from django.http import HttpResponse
 from rest_framework.views import APIView
+from rest_framework.reverse import reverse
 from rest_framework.response import Response
-from userprofile_auth.serializers import UserSerializer
+from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
+from userprofile_auth.serializers import UserSerializer
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import authenticate, login, logout
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 
 class UserSignIn(APIView):
 
     def post(self, request, *args, **kwargs):
-        user = authenticate(request, username=self.request.data.get('username'),
-                            password=self.request.data.get('password'))
+        user = authenticate(request, username=request.data.get('username'), password=request.data.get('password'))
         if user:
+            login(request, user)
             token, created = Token.objects.get_or_create(user=user)
             content = {
                 'user': user.username,
@@ -21,7 +24,35 @@ class UserSignIn(APIView):
             serializer = UserSerializer(data=content)
             if serializer.is_valid():
                 return Response({
-                    'my_things': reverse('my-things', request=self.request, format=None),
+                    'about_user': reverse('about_user', request=self.request, format=None),
                 })
             return Response(serializer.errors)
         return HttpResponse('DoesNotUser')
+
+
+class UserLogOut(APIView):
+    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        Token.objects.get(user=request.user).delete()
+        logout(request)
+        return Response(status=204)
+
+
+class UserSomeDetail(APIView):
+    authentication_classes = (BasicAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        token = get_object_or_404(Token, user=request.user)
+        if token:
+            content = {
+                'user': request.user.username,
+                'token': token.key,
+            }
+            serializer = UserSerializer(data=content)
+            if serializer.is_valid():
+                return Response(serializer.data)
+            return Response(serializer.errors)
+        return HttpResponse('Does Not Token of User')

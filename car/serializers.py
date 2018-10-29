@@ -1,6 +1,6 @@
-from django.contrib.auth.models import User
 from car.models import Car, City
 from rest_framework import serializers
+from django.contrib.auth.models import User
 
 
 class CitySerializer(serializers.Serializer):
