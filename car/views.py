@@ -1,16 +1,14 @@
-from django.http import HttpResponse
 from django.http import Http404
-from car.serializers import CarSerializer, UserSerializer, CitySerializer
-from car.models import Car, ModelCar, City, BrandCar
 from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.contrib.auth.models import User
 from rest_framework import permissions
+from rest_framework.views import APIView
+from rest_framework.reverse import reverse
+from django.contrib.auth.models import User
+from rest_framework.response import Response
 from car.permissions import IsOwnerOrReadOnly
 from rest_framework.decorators import api_view
-from rest_framework.reverse import reverse
-from rest_framework.renderers import JSONRenderer
+from car.models import Car, ModelCar, City, BrandCar
+from car.serializers import CarSerializer, UserSerializer, CitySerializer
 
 from django.db.models import Count
 

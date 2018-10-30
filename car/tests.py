@@ -1,8 +1,8 @@
 from car.models import Car
-from rest_framework.test import APITestCase
-from car.models import validate_longtitude
 from django.test import TestCase
+from car.models import validate_longtitude
 from django.contrib.auth.models import User
+from rest_framework.test import APITestCase
 
 
 class CarModelTestCase(TestCase):
@@ -55,6 +55,7 @@ class EndPointTestCase(APITestCase):
         add_data = {'color': 'GREEN', 'price': 2470}
         response = self.client.put('/cars/1/', add_data, format='json')
         self.assertEqual(response.data, response_data)
+        self.assertEqual(response.data['color'], 'GREEN')
         self.assertEqual(response.status_code, 200)
 
     def test_delete_car(self):
