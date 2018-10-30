@@ -32,7 +32,7 @@ class UserSignIn(APIView):
 class UserLogOut(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         Token.objects.get(user=request.user).delete()
         return Response(status=204)
 
