@@ -6,8 +6,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from userprofile_auth.serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth import authenticate, login, logout
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import authenticate
 
 
 class UserSignIn(APIView):
@@ -15,7 +14,6 @@ class UserSignIn(APIView):
     def post(self, request, *args, **kwargs):
         user = authenticate(request, username=request.data.get('username'), password=request.data.get('password'))
         if user:
-            login(request, user)
             token, created = Token.objects.get_or_create(user=user)
             content = {
                 'user': user.username,
@@ -25,23 +23,21 @@ class UserSignIn(APIView):
             if serializer.is_valid():
                 return Response({
                     'about_user': reverse('about_user', request=self.request, format=None),
+                    'token': token.key,
                 })
             return Response(serializer.errors)
         return HttpResponse('DoesNotUser')
 
 
 class UserLogOut(APIView):
-    authentication_classes = (BasicAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         Token.objects.get(user=request.user).delete()
-        logout(request)
         return Response(status=204)
 
 
 class UserSomeDetail(APIView):
-    authentication_classes = (BasicAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
